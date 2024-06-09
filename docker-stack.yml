@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: docker.io/library/mysql:8.0
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - tempconverter-net
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager  # Ensure the database runs only on the manager node
+
+  web:
+    image: yourusername/tempconverter:latest
+    ports:
+      - "80:5000"  # Expose port 80 to the outside world, mapped to port 5000 inside the container
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - STUDENT=${STUDENT}
+      - COLLEGE=${COLLEGE}
+    networks:
+      - tempconverter-net
+    deploy:
+      replicas: 2  # Start with 2 replicas of the application
+      placement:
+        max_replicas_per_node: 1  # Ensure no two replicas are on the same node
+
+volumes:
+  db_data:
+
+networks:
+  tempconverter-net:
