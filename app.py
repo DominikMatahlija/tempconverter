@@ -8,7 +8,7 @@ from os import environ
 
 app = Flask(__name__)
 # Configure secret key for flask - used for session sharing
-app.config['SECRET_KEY'] = 'your-secret-key'
+app.config['SECRET_KEY'] = 'super_extra_safe_key'
 
 # Configure database details, these need to be changed depending on how you configured mysql container
 db_user = environ.get('DB_USER', 'CHANGEME')
