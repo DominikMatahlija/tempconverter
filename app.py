@@ -5,16 +5,20 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import InputRequired
 from datetime import datetime
 from os import environ
+from dotenv import load_dotenv
+import os
 
+# Load environment variables from .env file
+load_dotenv()
 app = Flask(__name__)
 # Configure secret key for flask - used for session sharing
 app.config['SECRET_KEY'] = 'super_extra_safe_key'
 
 # Configure database details, these need to be changed depending on how you configured mysql container
-db_user = environ.get('DB_USER', 'CHANGEME')
-db_pass = environ.get('DB_PASS', 'CHANGEME')
-db_host = environ.get('DB_HOST', 'CHANGEME')
-db_name = environ.get('DB_NAME', 'CHANGEME')
+db_user = os.environ.get('DB_USER', 'CHANGEME')
+db_pass = os.environ.get('DB_PASS', 'CHANGEME')
+db_host = os.environ.get('DB_HOST', 'CHANGEME')
+db_name = os.environ.get('DB_NAME', 'CHANGEME')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'+db_user+':'+db_pass+'@'+db_host+'/'+db_name
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
