@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: tempconverter
-        image: dmatahl/devopsproject:latest
+        image: docker.io/dmatahl/devopsproject:latest
         ports:
         - containerPort: 5000
         env:
