@@ -20,25 +20,13 @@ spec:
         - containerPort: 3306
         env:
         - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: tempconverter-secrets
-              key: MYSQL_ROOT_PASSWORD
+          value: "super_strong_password"  # Use the actual root password here
         - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: tempconverter-secrets
-              key: DB_NAME
+          value: "super_important_db_name"  # Use the actual database name here
         - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: tempconverter-secrets
-              key: DB_USER
+          value: "serius_admin"  # Use the actual username here
         - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: tempconverter-secrets
-              key: DB_PASS
+          value: "super_strong_password"  # Use the actual password here
         volumeMounts:
         - name: mysql-data
           mountPath: /var/lib/mysql
@@ -50,7 +38,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
+  name: mysql  # Change the name to 'db' to match your other environment
   namespace: tempconverter
 spec:
   ports:
@@ -58,4 +46,3 @@ spec:
     targetPort: 3306
   selector:
     app: mysql
-  clusterIP: None
