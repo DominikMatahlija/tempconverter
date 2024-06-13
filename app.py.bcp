@@ -7,10 +7,6 @@ from datetime import datetime
 from os import environ
 from dotenv import load_dotenv
 import os
-import logging
-
-# Set up basic logging
-logging.basicConfig(level=logging.DEBUG)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -23,9 +19,6 @@ db_user = os.environ.get('DB_USER', 'CHANGEME')
 db_pass = os.environ.get('DB_PASS', 'CHANGEME')
 db_host = os.environ.get('DB_HOST', 'CHANGEME')
 db_name = os.environ.get('DB_NAME', 'CHANGEME')
-
-# Log the database connection details (excluding password for security)
-app.logger.debug(f"Connecting to MySQL database with user: {db_user}, host: {db_host}, database: {db_name}")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{db_user}:{db_pass}@{db_host}/{db_name}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -44,11 +37,7 @@ class Temperature(db.Model):
     user_agent = db.Column(db.String(200), nullable=False)
 
 with app.app_context():
-    try:
-        db.create_all()
-        app.logger.debug("Successfully connected to the database and created tables.")
-    except Exception as e:
-        app.logger.error(f"Error connecting to the database: {e}")
+    db.create_all()
 
 class TemperatureForm(FlaskForm):
     celsius = StringField('Celsius', validators=[InputRequired()])
@@ -64,6 +53,7 @@ def index():
         db.session.add(temperature)
         db.session.commit()
     temperatures = Temperature.query.order_by(Temperature.date.desc()).limit(10).all()
+    # log_entries = [(t.fahrenheit, t.ip_address, t.user_agent.split()[0], t.date.strftime('%m/%d/%Y %I:%M:%S %p')) for t in temperatures]
     log_entries = [(t.date.strftime('%m/%d/%Y %I:%M:%S %p'), t.celsius, t.fahrenheit, t.ip_address, t.user_agent.split()[0], ) for t in temperatures]
     return render_template('index.html', form=form, log_entries=log_entries, student=student, college=college)
 
